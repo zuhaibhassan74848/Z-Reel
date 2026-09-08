@@ -27,9 +27,18 @@ jobs:
 
       - name: Extract Android Project
         run: |
-          unzip -o Z_Reels_Final_SkyBlue_Project.zip -d extracted
-          cp -r extracted/* .
-          cp -r extracted/.[!.]* . 2>/dev/null || true
+          ZIP_FILE=$(find . -maxdepth 1 -type f -name "*.zip" | head -n 1)
+          mkdir extracted
+          unzip -q "$ZIP_FILE" -d extracted
+
+          PROJECT_DIR=$(find extracted -name settings.gradle -printf '%h\n' | head -n 1)
+
+          if [ -z "$PROJECT_DIR" ]; then
+            echo "settings.gradle not found"
+            exit 1
+          fi
+
+          cp -r "$PROJECT_DIR"/. .
 
       - name: Build APK
         run: gradle assembleDebug
