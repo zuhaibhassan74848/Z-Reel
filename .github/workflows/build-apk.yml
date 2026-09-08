@@ -25,6 +25,12 @@ jobs:
         with:
           gradle-version: '8.7'
 
+      - name: Extract Android Project
+        run: |
+          unzip -o Z_Reels_Final_SkyBlue_Project.zip -d extracted
+          cp -r extracted/* .
+          cp -r extracted/.[!.]* . 2>/dev/null || true
+
       - name: Build APK
         run: gradle assembleDebug
 
